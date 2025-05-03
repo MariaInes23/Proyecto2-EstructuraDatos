@@ -156,13 +156,31 @@ class Reproductor(tk.Tk):
         
     
     def seleccionar_archivo(self):
-        return
+        ruta = filedialog.askopenfilename(filetypes=[("Archivos MP3", "*.mp3")])
+        if ruta:
+            # Obtener duración automáticamente
+            duracion = self.obtener_duracion(ruta)
+            self.entry_duracion.config(state="normal")
+            self.entry_duracion.delete(0, tk.END)
+            self.entry_duracion.insert(0, duracion)
+            self.entry_duracion.config(state="readonly")
+            self.ruta_seleccionada = ruta
 
     def guardar_cancion(self):
-        return
+        nombre = self.entry_nombre.get()
+        artista = self.entry_artista.get()
+        duracion = self.entry_duracion.get()
+
+        if nombre and artista and duracion and hasattr(self, 'ruta_seleccionada'):
+            nodo = NodoCancion(nombre, artista, duracion, self.ruta_seleccionada)
+            self.lista.agregar(nodo)
+            self.actualizar_lista_widget()
+            self.cargar_ventana.destroy()  # Cerrar la ventana de carga
 
     def actualizar_lista_widget(self):
-        return
+        self.lista_widget.delete(0, tk.END)
+        for nodo in self.lista.obtener_lista():
+            self.lista_widget.insert(tk.END, str(nodo))
 
     def reproducir(self):
         return
