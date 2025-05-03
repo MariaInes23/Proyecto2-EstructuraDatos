@@ -116,7 +116,44 @@ class Reproductor(tk.Tk):
         self.label_tiempo.pack()
 
     def cargar_cancion(self):
-        return
+        ruta = filedialog.askopenfilename(filetypes=[("Archivos MP3", "*.mp3")])
+        if not ruta:
+            return  
+
+        duracion = self.obtener_duracion(ruta)
+        self.ruta_seleccionada = ruta
+
+        # PESTAÑA PARA AGREGAR
+        self.cargar_ventana = tk.Toplevel(self)
+        self.cargar_ventana.title("Ingresar Datos de la Canción")
+        self.cargar_ventana.geometry("600x400")
+        self.cargar_ventana.configure(bg="#1e1e2e")
+
+        ttk.Label(self.cargar_ventana, text="Nombre de Canción:").pack(pady=5)
+        self.entry_nombre = ttk.Entry(self.cargar_ventana)
+        self.entry_nombre.pack(pady=5, fill=tk.X, padx=20)
+
+        ttk.Label(self.cargar_ventana, text="Artista:").pack(pady=5)
+        self.entry_artista = ttk.Entry(self.cargar_ventana)
+        self.entry_artista.pack(pady=5, fill=tk.X, padx=20)
+
+        ttk.Label(self.cargar_ventana, text="Duración (automatico):").pack(pady=5)
+        self.entry_duracion = ttk.Entry(self.cargar_ventana, state="readonly")
+        self.entry_duracion.pack(pady=5, fill=tk.X, padx=20)
+        self.entry_duracion.config(state="normal")
+        self.entry_duracion.insert(0, duracion)
+        self.entry_duracion.config(state="readonly")
+
+        #BOTONES DE LA PESTAÑA PARA AGRGAR --> ACEPTAR Y CANCELAR
+        frame_botones = ttk.Frame(self.cargar_ventana)
+        frame_botones.pack(pady=15)
+
+        btn_aceptar = ttk.Button(frame_botones, text="Aceptar", command=self.guardar_cancion)
+        btn_aceptar.grid(row=0, column=0, padx=10)
+
+        btn_cancelar = ttk.Button(frame_botones, text="Cancelar", command=self.cargar_ventana.destroy)
+        btn_cancelar.grid(row=0, column=1, padx=10)
+        
     
     def seleccionar_archivo(self):
         return
