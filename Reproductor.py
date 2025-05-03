@@ -183,22 +183,46 @@ class Reproductor(tk.Tk):
             self.lista_widget.insert(tk.END, str(nodo))
 
     def reproducir(self):
-        return
+        nodo = self.lista.obtener_actual()
+        if nodo:
+            if self.en_pausa:
+                mixer.music.unpause()
+                self.en_pausa = False
+            else:
+                mixer.music.load(nodo.ruta)
+                mixer.music.play()
+                self.en_reproduccion = True
+                self.label.config(text=f"🎶 {nodo.nombre} - {nodo.artista}")
+                self.slider.config(to=self.obtener_duracion_estimada(nodo.duracion))
+                threading.Thread(target=self.actualizar_slider, daemon=True).start()
 
     def pausar(self):
-        return
-    
+        if mixer.music.get_busy():
+            mixer.music.pause()
+            self.en_pausa = True
+
     def detener(self):
-        return
-    
+        mixer.music.stop()
+        self.en_reproduccion = False
+        self.label.config(text="🎶 Canción actual: Ninguna")
+        self.slider.set(0)
+        self.label_tiempo.config(text="00:00 / 00:00")
+
     def siguiente(self):
-        return
+        self.lista.siguiente()
+        self.en_pausa = False
+        self.reproducir()
 
     def anterior(self):
-        return
+        self.lista.anterior()
+        self.en_pausa = False
+        self.reproducir()
 
     def mover_slider(self, val):
-        return
+        if self.en_reproduccion:
+            if not self.actualizando_slider:
+                mixer.music.play(start=float(val))
+                self.en_pausa = False
 
     def obtener_duracion(self, ruta):
         return
