@@ -1,3 +1,10 @@
+import tkinter as tk
+from tkinter import ttk, filedialog
+from pygame import mixer
+import time
+import threading
+from mutagen.mp3 import MP3 
+
 class NodoCancion:
     def __init__(self, nombre, artista, duracion, ruta):
         self.nombre = nombre
