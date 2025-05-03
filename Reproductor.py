@@ -225,16 +225,38 @@ class Reproductor(tk.Tk):
                 self.en_pausa = False
 
     def obtener_duracion(self, ruta):
-        return
+        try:
+            audio = MP3(ruta)
+            return str(int(audio.info.length // 60)).zfill(2) + ":" + str(int(audio.info.length % 60)).zfill(2)
+        except:
+            return "00:00"
 
     def obtener_duracion_estimada(self, duracion_str):
-        return
+        minutos, segundos = map(int, duracion_str.split(":"))
+        return minutos * 60 + segundos
 
     def actualizar_slider(self):
-        return
+        while self.en_reproduccion:
+            if not self.en_pausa and mixer.music.get_busy():
+                try:
+                    self.actualizando_slider = True
+                    pos = mixer.music.get_pos() / 1000
+                    self.slider.set(pos)
+                    actual = self.formato_tiempo(pos)
+                    total = self.lista.obtener_actual().duracion
+                    self.label_tiempo.config(text=f"{actual} / {total}")
+                    time.sleep(1)
+                finally:
+                    self.actualizando_slider = False
+            else:
+                time.sleep(0.5)
 
     def formato_tiempo(self, segundos):
-        return
+        segundos = int(segundos)
+        minutos = segundos // 60
+        resto = segundos % 60
+        return f"{minutos:02}:{resto:02}"
+
 
 
 reproductor = Reproductor()
